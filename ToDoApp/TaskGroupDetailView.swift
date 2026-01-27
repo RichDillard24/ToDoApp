@@ -4,34 +4,44 @@ import SwiftUI
 
 struct TaskGroupDetailView: View {
     
-    @Binding var group : TaskGroup
+    @Binding var groups : TaskGroup
+    @Environment(\.horizontalSizeClass) var sizeClass
     
     var body: some View {
         List {
-            ForEach($group.tasks) { $task in
-                HStack {
-                    Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(task.isCompleted ? .cyan : .gray)
-                        .onTapGesture{
-                            withAnimation{
-                                task.isCompleted.toggle()
+            
+            Section{
+                if sizeClass == .regular {
+                    GroupsStatsView(task: groups.tasks)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color(.secondarySystemBackground))
+                }
+                
+                ForEach($groups.tasks) { $task in
+                    HStack {
+                        Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(task.isCompleted ? .cyan : .gray)
+                            .onTapGesture{
+                                withAnimation{
+                                    task.isCompleted.toggle()
+                                }
                             }
-                        }
-                    TextField("New Task", text: $task.title)
-                        .strikethrough(task.isCompleted)
-                        .foregroundStyle(task.isCompleted ? .gray : .primary)
-                    
+                        TextField("New Task", text: $task.title)
+                            .strikethrough(task.isCompleted)
+                            .foregroundStyle(task.isCompleted ? .gray : .primary)
+                        
+                    }
+                }
+                .onDelete{ index in
+                    groups.tasks.remove(atOffsets: index)
                 }
             }
-            .onDelete{ index in
-                group.tasks.remove(atOffsets: index)
-            }
         }
-        .navigationTitle(group.title)
+        .navigationTitle(groups.title)
             .toolbar {
                 Button("Add Task") {
                     withAnimation {
-                        group.tasks.append(TaskItem(title: ""))
+                        groups.tasks.append(TaskItem(title: ""))
                     }
                 }
             }
