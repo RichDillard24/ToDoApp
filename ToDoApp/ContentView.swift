@@ -1,6 +1,6 @@
 
 import SwiftUI
-
+import Combine
 
 struct ContentView: View {
     
@@ -11,6 +11,10 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     let saveKey = "SvaedTaskGroups"
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
+    @AppStorage("selectedLanguage") private var selectedLanguage: String = "en"
+    
+    @Environment(\.locale) private var locale
+    let languageKey = "selectedLanguage"
     
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
@@ -39,6 +43,19 @@ struct ContentView: View {
                         Image(systemName: "plus")
                     }
                 }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Picker("Language", selection: $selectedLanguage) {
+                        ForEach(language.allCases) { language in
+                            Text(language.name).tag(language)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                }
+             
             }
     
             } detail: {
