@@ -12,7 +12,7 @@ struct ToDoAppApp: App {
     @AppStorage("selectedLanguage") private var selectedLanguage: language = .english
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DashboardView()
                 .environment(\.locale, Locale(identifier: selectedLanguage.rawValue))
         }
     }

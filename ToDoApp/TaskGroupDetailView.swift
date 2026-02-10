@@ -26,9 +26,12 @@ struct TaskGroupDetailView: View {
                                     task.isCompleted.toggle()
                                 }
                             }
+                            .accessibilityIdentifier("Toggle: \(task.id)")
+                        
                         TextField("New Task", text: $task.title)
                             .strikethrough(task.isCompleted)
                             .foregroundStyle(task.isCompleted ? .gray : .primary)
+                            .accessibilityIdentifier("Task: \(task.title)")
                         
                     }
                 }
@@ -44,6 +47,7 @@ struct TaskGroupDetailView: View {
                         groups.tasks.append(TaskItem(title: ""))
                     }
                 }
+                .accessibilityIdentifier("Add_Task")
             }
     }
 }

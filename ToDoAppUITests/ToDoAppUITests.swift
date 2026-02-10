@@ -8,7 +8,7 @@
 import XCTest
 
 final class ToDoAppUITests: XCTestCase {
-
+    let app = XCUIApplication()
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -22,20 +22,41 @@ final class ToDoAppUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+    func testLaunchInEnglish() {
+        app.launchArguments = ["-AppleLanguages", "(en)"]
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        let header = app.staticTexts["Who is working today?"]
+        XCTAssertTrue(header.exists, "English header is missing")
+        
     }
-
-    @MainActor
-    func testLaunchPerformance() throws {
-        // This measures how long it takes to launch your application.
-        measure(metrics: [XCTApplicationLaunchMetric()]) {
-            XCUIApplication().launch()
-        }
+    func testLaunchInSpanish() {
+        app.launchArguments = ["-AppleLanguages", "(es)"]
+        app.launch()
+        
+        let header = app.staticTexts["¿Quién está trabajando hoy?"]
+        XCTAssertTrue(header.exists, "Spanish header is missing")
+    }
+    func testCreateNewGroup() {
+        app.launch()
+        let Profile_picker = app.buttons["Profile_pickerRich Dillard"]
+        XCTAssertTrue(Profile_picker.exists)
+        Profile_picker.tap()
+        
+        let Add_Group = app.buttons["Add_Group"]
+        XCTAssertTrue(Add_Group.exists)
+        Add_Group.tap()
+        
+        let nameField = app.textFields["groupName"]
+        XCTAssertTrue(nameField.exists)
+        nameField.tap()
+        nameField.typeText("Test Group")
+        
+        let iconButton = app.images["icon_house.fill"]
+        iconButton.tap()
+        
+        app.buttons["save"].tap()
+        
+        XCTAssertTrue(app.buttons["Task_Groups"].exists)
     }
 }

@@ -16,25 +16,31 @@ struct ContentView: View {
     @Environment(\.locale) private var locale
     let languageKey = "selectedLanguage"
     
+    @Environment(\.dismiss) private var dismiss
+    @Binding var profile: Profile
+    
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             List(selection: $selectedGroup){
-                ForEach(taskGroups){ group in
+                ForEach(profile.groups){ group in
                     NavigationLink(value: group) {
                         Label(group.title, systemImage: group.symbolName)
                     }
+                    .accessibilityIdentifier("Task_Groups")
                 }
                 
+                
             }
-            .navigationTitle("Things to Do")
+            .navigationTitle(profile.name)
             .listStyle(.sidebar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button{
-                        isDarkMode.toggle()
+                       dismiss()
                     } label: {
-                        Image(systemName: isDarkMode ? "sun.max.fill" : "moon.fill")
+                        Image(systemName: "chevron.left")
                     }
+                    .accessibilityIdentifier("back")
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button{
@@ -42,7 +48,9 @@ struct ContentView: View {
                     } label : {
                         Image(systemName: "plus")
                     }
+                    .accessibilityIdentifier("Add_Group")
                 }
+                
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Picker("Language", selection: $selectedLanguage) {
@@ -54,14 +62,15 @@ struct ContentView: View {
                     .padding()
                     .background(Color(.systemGray6))
                     .cornerRadius(8)
+                    .accessibilityIdentifier("Language_Selection")
                 }
              
             }
     
             } detail: {
                 if let group = selectedGroup {
-                    if let index = taskGroups.firstIndex(where: { $0.id == group.id}){
-                        TaskGroupDetailView(groups: $taskGroups[index])
+                    if let index = profile.groups.firstIndex(where: { $0.id == group.id}){
+                        TaskGroupDetailView(groups: $profile.groups[index])
                     }
                 } else {
                     ContentUnavailableView(" Select a group to see more details", systemImage: "sidebar.left")
@@ -83,33 +92,36 @@ struct ContentView: View {
             }
             .preferredColorScheme(isDarkMode ? .dark : .light)
             
+            .navigationSplitViewStyle(.balanced)
+            .navigationBarBackButtonHidden(true)
             .sheet(isPresented: $isShowingAddGroup){
                 NewGroupView { newGroup in
-                    taskGroups.append(newGroup)
+                    profile.groups.append(newGroup)
                     selectedGroup = newGroup
+                        
                 }
             }
         }
         func saveData() {
-            if let encodedData = try? JSONEncoder().encode(taskGroups) {
+            if let encodedData = try? JSONEncoder().encode(profile.groups) {
                 UserDefaults.standard.set(encodedData, forKey: saveKey)
             }
         }
+        
         func loadData() {
             if let savedData = UserDefaults.standard.data(forKey: saveKey){
                 if let decodeGroups = try? JSONDecoder().decode([TaskGroup].self, from: savedData){
-                    taskGroups = decodeGroups
+                    profile.groups = decodeGroups
                     return
                 }
             }
-            taskGroups = TaskGroup.sampleData
+            if profile.groups.isEmpty {
+                profile.groups = TaskGroup.sampleData
+            }
         }
     }
 
 
-#Preview {
-    ContentView()
-    
-}
+
 
 

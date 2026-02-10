@@ -34,12 +34,14 @@ struct GroupsStatsView: View {
                 Text("Task Progress")
                 Text("\(completedCount)/\(task.count)Completed")
             }
+            .accessibilityIdentifier("task_progress_view")
             Spacer()
         }
         .padding()
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
         .padding(.horizontal)
+        
     }
 }
 

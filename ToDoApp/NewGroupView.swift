@@ -15,6 +15,7 @@ struct NewGroupView: View {
             Form {
                 Section("Group Name") {
                     TextField("Type name of group", text: $groupName)
+                        .accessibilityIdentifier("groupName")
                 }
                 
                 Section("Select Icon") {
@@ -29,6 +30,7 @@ struct NewGroupView: View {
                                 .onTapGesture {
                                     selectedIcon = icon
                                 }
+                                .accessibilityIdentifier("icon_\(icon)")
                         }
                     }
                     .padding(.vertical)
@@ -37,8 +39,11 @@ struct NewGroupView: View {
             .navigationTitle("New Group")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("cancel") { dismiss() }
+                    Button("cancel") { dismiss()
+                    }
+                    .accessibilityIdentifier("cancel")
                 }
+                
                 
                 ToolbarItem(placement: .confirmationAction){
                     Button("save") {
@@ -47,6 +52,7 @@ struct NewGroupView: View {
                         dismiss()
                     }
                     .disabled(groupName.isEmpty)
+                    .accessibilityIdentifier("save")
                 }
             }
         }
