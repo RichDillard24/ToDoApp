@@ -47,11 +47,11 @@ extension TaskGroup {
 extension Profile {
     static let sample: [Profile] = [
         Profile(
-            name: "Rich Dillard",
+            name: "Professor",
             profileImage: "professor_img",
             groups: TaskGroup.sampleData),
         Profile(
-            name: "Joe Schmoe",
+            name: "Student",
             profileImage: "student_img",
             groups: [] ),
     ]

@@ -33,7 +33,7 @@ struct DashboardView: View {
                                 ProfileCardView(profile: profile)
                             }
                             .buttonStyle(PlainButtonStyle())
-                            .accessibilityIdentifier("Profile_picker\(profile.name)")
+                            .accessibilityIdentifier("ProfileCard_\(profile.name)")
                         }
                     }
                     .padding(.horizontal)

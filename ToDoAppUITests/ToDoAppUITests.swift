@@ -59,4 +59,51 @@ final class ToDoAppUITests: XCTestCase {
         
         XCTAssertTrue(app.buttons["Task_Groups"].exists)
     }
+    
+    
+    func testNavigationToTaskGroups() {
+        let app = XCUIApplication()
+        app.launch()
+        
+        let professorCard = app.buttons["ProfileCard_Professor"]
+        XCTAssertTrue(professorCard.exists, "The Professor car should be visible")
+        professorCard.tap()
+        
+        let homeGroup = app.buttons["TaskGroups_Home"]
+        XCTAssertTrue(homeGroup.waitForExistence(timeout: 2), "The home group should be visible")
+        homeGroup.tap()
+        
+        let detailTitle = app.navigationBars["Home"]
+        XCTAssertTrue(detailTitle.exists, "The navigation bar title should display the name of thr group")
+        
+    }
+    
+    func testTaskLifecycle_AddCompleteAndDelete() {
+        let app = XCUIApplication()
+        app.launch()
+        
+        app.buttons["ProfileCard_Professor"].tap()
+        app.buttons["TaskGroups_Home"].tap()
+        
+        let addTaskButton = app.buttons["AddTaskButton"]
+        XCTAssertTrue(addTaskButton.exists)
+        addTaskButton.tap()
+        
+        let allTextFields = app.textFields
+        let lastTaskField = allTextFields.element(boundBy : allTextFields.count - 1)
+        lastTaskField.tap()
+        lastTaskField.typeText("Test Task")
+        app.keyboards.buttons["Return"].tap()
+        
+//        let taskToggle = app.images.matching(identifier: "TaskToggle").firstMatch
+//        XCTAssertTrue(taskToggle.exists)
+//        taskToggle.tap()
+//        
+        lastTaskField.swipeLeft()
+        app.buttons["Delete"].tap()
+        
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: lastTaskField )
+        let result = XCTWaiter().wait(for: [expectation], timeout: 4)
+        XCTAssertEqual(result, .completed, "The task should have been deleted")
+    }
 }

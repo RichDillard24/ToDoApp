@@ -26,7 +26,7 @@ struct ContentView: View {
                     NavigationLink(value: group) {
                         Label(group.title, systemImage: group.symbolName)
                     }
-                    .accessibilityIdentifier("Task_Groups")
+                    .accessibilityIdentifier("TaskGroups_\(group.title)")
                 }
                 
                 
@@ -48,7 +48,7 @@ struct ContentView: View {
                     } label : {
                         Image(systemName: "plus")
                     }
-                    .accessibilityIdentifier("Add_Group")
+                    .accessibilityIdentifier("AddGroupButton")
                 }
                 
                 
